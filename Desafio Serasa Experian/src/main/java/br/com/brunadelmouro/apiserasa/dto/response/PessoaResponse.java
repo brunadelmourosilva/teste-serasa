@@ -7,7 +7,7 @@ public record PessoaResponse(
     String idade,
     String telefone,
     Integer score,
-    Integer scoreDescricao,
+    String scoreDescricao,
     String cep,
     String estado,
     String cidade,

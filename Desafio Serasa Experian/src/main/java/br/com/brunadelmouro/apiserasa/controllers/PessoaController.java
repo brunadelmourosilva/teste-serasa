@@ -42,4 +42,22 @@ public class PessoaController {
     return new ResponseEntity<>(
         pessoaService.retornarPessoasPaginadas(nome, idade, cep, pageable), HttpStatus.OK);
   }
+
+  @Operation(summary = "Atualizar dados de cadastro da pessoa")
+  @PutMapping
+  public ResponseEntity<PessoaResponse> atualizarPessoa(
+      @RequestParam(value = "pessoaId") String pessoaId, @RequestBody PessoaRequest pessoaRequest) {
+
+    return new ResponseEntity<>(
+        pessoaService.atualizarPessoa(pessoaId, pessoaRequest), HttpStatus.OK);
+  }
+
+  @Operation(summary = "Deletar pessoa por id")
+  @DeleteMapping
+  public ResponseEntity<Void> deletarPessoa(@RequestParam(value = "pessoaId") String pessoaId) {
+
+    pessoaService.deletarPessoa(pessoaId);
+
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 }
