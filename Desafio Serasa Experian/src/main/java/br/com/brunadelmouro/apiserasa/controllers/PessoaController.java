@@ -44,20 +44,27 @@ public class PessoaController {
   }
 
   @Operation(summary = "Atualizar dados de cadastro da pessoa")
-  @PutMapping
+  @PutMapping("/{pessoaId}")
   public ResponseEntity<PessoaResponse> atualizarPessoa(
-      @RequestParam(value = "pessoaId") String pessoaId, @RequestBody PessoaRequest pessoaRequest) {
+      @PathVariable String pessoaId, @RequestBody PessoaRequest pessoaRequest) {
 
     return new ResponseEntity<>(
         pessoaService.atualizarPessoa(pessoaId, pessoaRequest), HttpStatus.OK);
   }
 
   @Operation(summary = "Deletar pessoa por id")
-  @DeleteMapping
-  public ResponseEntity<Void> deletarPessoa(@RequestParam(value = "pessoaId") String pessoaId) {
+  @DeleteMapping("/{pessoaId}")
+  public ResponseEntity<Void> deletarPessoa(@PathVariable String pessoaId) {
 
     pessoaService.deletarPessoa(pessoaId);
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @Operation(summary = "Obter pessoa por id")
+  @GetMapping("/{pessoaId}")
+  public ResponseEntity<PessoaResponse> retornarPessoaPorId(@PathVariable String pessoaId) {
+
+    return new ResponseEntity<>(pessoaService.retornarPessoaPorId(pessoaId), HttpStatus.OK);
   }
 }

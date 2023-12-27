@@ -31,6 +31,9 @@ public class Pessoa {
   @Column(name = "SCORE")
   private Integer score;
 
+  @Column(name = "SCORE_DESCRICAO")
+  private String scoreDescricao;
+
   @Column(name = "CEP")
   private String cep;
 
