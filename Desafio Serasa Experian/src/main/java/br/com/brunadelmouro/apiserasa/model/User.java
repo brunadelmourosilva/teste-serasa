@@ -2,6 +2,7 @@ package br.com.brunadelmouro.apiserasa.model;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,11 +38,11 @@ public class User {
   private OffsetDateTime creationDate = OffsetDateTime.now();
 
   @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-  private Set<Role> roles;
+  private List<Role> roles;
 
-  public Set<GrantedAuthority> rolesAsGrantedAuthorities() {
+  public List<GrantedAuthority> rolesAsGrantedAuthorities() {
     return roles.stream()
         .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
   }
 }

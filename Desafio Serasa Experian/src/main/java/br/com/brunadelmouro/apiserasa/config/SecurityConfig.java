@@ -1,5 +1,6 @@
 package br.com.brunadelmouro.apiserasa.config;
 
+import br.com.brunadelmouro.apiserasa.enums.RoleEnum;
 import br.com.brunadelmouro.apiserasa.repository.UserRepository;
 import br.com.brunadelmouro.apiserasa.security.JWTAuthenticationFilter;
 import br.com.brunadelmouro.apiserasa.security.JWTAuthorizationFilter;
@@ -9,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -47,7 +49,12 @@ public class SecurityConfig {
             auth -> {
               auth.requestMatchers("/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**")
                   .permitAll();
-              auth.anyRequest().authenticated();
+              auth.requestMatchers(HttpMethod.DELETE, "/pessoas/**").hasRole(RoleEnum.ADMIN.name());
+              auth.requestMatchers(HttpMethod.POST, "/pessoas/**").hasRole(RoleEnum.ADMIN.name());
+              auth.requestMatchers(HttpMethod.PUT, "/pessoas/**").hasRole(RoleEnum.ADMIN.name());
+              auth.anyRequest()
+                  .authenticated(); // means that requests related to the GET http method, needs
+                                    // only to be authenticated
             })
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilter(new JWTAuthenticationFilter(userRepository, jwtUtil, authenticationManager))

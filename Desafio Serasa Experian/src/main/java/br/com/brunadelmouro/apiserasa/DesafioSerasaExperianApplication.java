@@ -1,17 +1,16 @@
 package br.com.brunadelmouro.apiserasa;
 
+import br.com.brunadelmouro.apiserasa.enums.RoleEnum;
 import br.com.brunadelmouro.apiserasa.model.Role;
 import br.com.brunadelmouro.apiserasa.model.User;
 import br.com.brunadelmouro.apiserasa.repository.RoleRepository;
 import br.com.brunadelmouro.apiserasa.repository.UserRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.List;
 
 @SpringBootApplication
 public class DesafioSerasaExperianApplication implements CommandLineRunner {
@@ -45,9 +44,11 @@ public class DesafioSerasaExperianApplication implements CommandLineRunner {
     userRepository.saveAll(List.of(admin, user));
 
     //// TODO: 12/28/2023 MANY TO MANY
-    Role roleAdmin = Role.builder().roleName("ADMIN").user(admin).build();
+    Role roleAdmin =
+        Role.builder().roleName("ROLE_".concat(RoleEnum.ADMIN.name())).user(admin).build();
 
-    Role roleUser = Role.builder().roleName("USER").user(user).build();
+    Role roleUser =
+        Role.builder().roleName("ROLE_".concat(RoleEnum.USER.name())).user(user).build();
 
     roleRepository.saveAll(List.of(roleAdmin, roleUser));
   }
