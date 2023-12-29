@@ -5,6 +5,8 @@ import br.com.brunadelmouro.apiserasa.consumers.response.EnderecoResponse;
 import br.com.brunadelmouro.apiserasa.dto.request.PessoaRequest;
 import br.com.brunadelmouro.apiserasa.dto.response.PessoaResponse;
 import br.com.brunadelmouro.apiserasa.enums.ScoreDescricaoEnum;
+import br.com.brunadelmouro.apiserasa.exceptions.GenericException;
+import br.com.brunadelmouro.apiserasa.exceptions.NotFoundException;
 import br.com.brunadelmouro.apiserasa.mappers.PessoaMapper;
 import br.com.brunadelmouro.apiserasa.model.Pessoa;
 import br.com.brunadelmouro.apiserasa.repository.PessoaRepository;
@@ -23,7 +25,7 @@ public class PessoaService {
   private final PessoaRepository pessoaRepository;
 
   public PessoaResponse criarPessoa(PessoaRequest pessoaRequest) {
-    var endereco = viaCepConsumer.obterInformacoesCEP(pessoaRequest.cep());
+    EnderecoResponse endereco = chamarApiCep(pessoaRequest);
 
     var pessoaEntityMapper = pessoaMapper.pessoaRequestToPessoaEntity(pessoaRequest, endereco);
 
@@ -47,7 +49,7 @@ public class PessoaService {
     var pessoaEntity =
         pessoaRepository
             .findById(pessoaId)
-            .orElseThrow(RuntimeException::new); // // TODO: 12/27/2023 exception
+            .orElseThrow(() -> new NotFoundException("Pessoa não encontrada."));
 
     var novoEndereco = verificarMudancaCEP(pessoaEntity, pessoaRequest);
     var novoScore = verificarMudancaScore(pessoaEntity, pessoaRequest);
@@ -62,18 +64,33 @@ public class PessoaService {
   }
 
   public void deletarPessoa(String pessoaId) {
-    pessoaRepository.findById(pessoaId).orElseThrow(RuntimeException::new);
+    pessoaRepository
+        .findById(pessoaId)
+        .orElseThrow(() -> new NotFoundException("Pessoa não encontrada."));
 
     pessoaRepository.deleteById(pessoaId);
   }
 
   public PessoaResponse retornarPessoaPorId(String pessoaId) {
     var pessoaEntity =
-            pessoaRepository
-                    .findById(pessoaId)
-                    .orElseThrow(RuntimeException::new); // // TODO: 12/27/2023 exception
+        pessoaRepository
+            .findById(pessoaId)
+            .orElseThrow(() -> new NotFoundException("Pessoa não encontrada."));
 
     return pessoaMapper.pessoaEntityToPessoaResponse(pessoaEntity);
+  }
+
+  private EnderecoResponse chamarApiCep(PessoaRequest pessoaRequest) {
+    EnderecoResponse endereco;
+    try {
+      endereco = viaCepConsumer.obterInformacoesCEP(pessoaRequest.cep());
+    } catch (Exception e) {
+      throw new GenericException(
+          "Um erro inesperado ocorreu enquanto a chamada para a API de CEP foi feita: "
+              + e.getMessage());
+    }
+
+    return endereco;
   }
 
   private ScoreDescricaoEnum atualizarScoreDescricao(Integer score) {
@@ -90,7 +107,7 @@ public class PessoaService {
 
   private EnderecoResponse verificarMudancaCEP(Pessoa pessoaEntity, PessoaRequest pessoaRequest) {
     if (!pessoaRequest.cep().equals(pessoaEntity.getCep())) {
-      return viaCepConsumer.obterInformacoesCEP(pessoaRequest.cep());
+      return chamarApiCep(pessoaRequest);
     }
 
     return new EnderecoResponse(
