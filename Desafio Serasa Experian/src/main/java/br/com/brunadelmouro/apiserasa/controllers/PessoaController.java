@@ -1,10 +1,12 @@
 package br.com.brunadelmouro.apiserasa.controllers;
 
+import br.com.brunadelmouro.apiserasa.annotations.NoHyphen;
 import br.com.brunadelmouro.apiserasa.dto.request.PessoaRequest;
 import br.com.brunadelmouro.apiserasa.dto.response.PessoaResponse;
 import br.com.brunadelmouro.apiserasa.services.PessoaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +25,7 @@ public class PessoaController {
 
   @Operation(summary = "Cadastrar pessoa")
   @PostMapping
-  public ResponseEntity<PessoaResponse> criarPessoa(@RequestBody PessoaRequest pessoaRequest) {
+  public ResponseEntity<PessoaResponse> criarPessoa(@Valid @RequestBody PessoaRequest pessoaRequest) {
 
     return new ResponseEntity<>(pessoaService.criarPessoa(pessoaRequest), HttpStatus.CREATED);
   }
@@ -33,7 +35,7 @@ public class PessoaController {
   public ResponseEntity<Page<PessoaResponse>> retornarPessoasPaginadas(
       @RequestParam(value = "nome", required = false) String nome,
       @RequestParam(value = "idade", required = false) Integer idade,
-      @RequestParam(value = "cep", required = false) String cep,
+      @RequestParam(value = "cep", required = false) @NoHyphen String cep,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
 
