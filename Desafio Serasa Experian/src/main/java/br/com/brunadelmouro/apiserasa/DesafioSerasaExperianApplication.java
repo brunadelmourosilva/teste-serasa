@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Profile("!test")
 @SpringBootApplication
 public class DesafioSerasaExperianApplication implements CommandLineRunner {
 
@@ -43,7 +45,6 @@ public class DesafioSerasaExperianApplication implements CommandLineRunner {
 
     userRepository.saveAll(List.of(admin, user));
 
-    //// TODO: 12/28/2023 MANY TO MANY
     Role roleAdmin =
         Role.builder().roleName("ROLE_".concat(RoleEnum.ADMIN.name())).user(admin).build();
 
