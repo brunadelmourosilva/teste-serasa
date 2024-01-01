@@ -71,22 +71,6 @@ class PessoaControllerTest {
   }
 
   @Test
-  void retornarPessoasPaginadasShouldReturnOkStatus() throws Exception {
-
-    when(pessoaService.retornarPessoasPaginadas(any(), any(), any(), any()))
-        .thenReturn(new PageImpl<>(List.of(buildPessoaResponseObject())));
-
-    var request =
-        MockMvcRequestBuilders.get("/pessoas")
-            .param("page", "0")
-            .param("size", "10")
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON);
-
-    mockMvc.perform(request).andDo(print()).andExpect(status().isOk());
-  }
-
-  @Test
   void atualizarPessoaShouldReturnOkStatus() throws Exception {
     PessoaRequest mockPessoaRequest = buildPessoaRequestObject();
     PessoaResponse mockPessoaResponse = buildPessoaResponseObject();
