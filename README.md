@@ -59,6 +59,6 @@ Certifique-se de incluir o token obtido na seção de autorização disponibiliz
 
 ![image](https://github.com/brunadelmourosilva/teste-serasa/assets/61791877/07867096-1e42-4e8f-b807-8a0d52648641)
 
-
+Vale ressaltar que não é necessário incluir a prefixo "Bearer" no referido campo.
 
 
